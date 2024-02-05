@@ -1,5 +1,5 @@
 # Ktor AWS ALB Authenticator Plugin
-Allows you to authenticate JWT tokens from ALB-forwarded `X-Amzn-*` headers.
+Allows you to authenticate JWT tokens from ALB-forwarded `X-Amzn-*` headers using Raiffeisen Bank International's library.
 
 ## Usage:
 ```kotlin
