@@ -1,5 +1,8 @@
 package io.liftgate.oss.auth
 
+import com.auth0.jwk.JwkProvider
+import com.rbinternational.awstools.awsjwtvalidator.AWSAlbUserClaimsJwkProvider
+import com.rbinternational.awstools.awsjwtvalidator.AWSAlbUserClaimsSigningKeyResolver
 import com.rbinternational.awstools.awsjwtvalidator.AWSAlbUserClaimsTokenValidator
 import io.ktor.http.auth.*
 import io.ktor.server.auth.*
@@ -18,12 +21,19 @@ class AWSAlbAuthenticationProvider internal constructor(private val config: Conf
     class Config internal constructor(name: String?) : AuthenticationProvider.Config(name)
     {
         internal lateinit var realm: String
-        internal lateinit var tokenValidator: AWSAlbUserClaimsTokenValidator
+        internal var tokenValidator: AWSAlbUserClaimsTokenValidator = AWSAlbUserClaimsTokenValidator()
         internal lateinit var audience: String
         internal lateinit var issuer: String
 
         fun tokenValidator(tokenValidator: AWSAlbUserClaimsTokenValidator) =
             apply { this.tokenValidator = tokenValidator }
+
+        fun tokenValidatorFromJwkProvider(claimsJwkProvider: JwkProvider) =
+            apply {
+                this.tokenValidator = AWSAlbUserClaimsTokenValidator(
+                    AWSAlbUserClaimsSigningKeyResolver(claimsJwkProvider)
+                )
+            }
 
         fun audience(audience: String) =
             apply { this.audience = audience }
